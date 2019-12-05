@@ -1,0 +1,13 @@
+#!/bin/bash
+
+from=origin/master
+to=HEAD
+branch=`git rev-parse --abbrev-ref HEAD`
+issue=`echo $branch | sed 's/^\([A-Z]*-[0-9]*\)-.*$/\1/'`
+gen_issue_re='^[A-Z]+-[0-9]+ '
+
+echo $issue
+
+git rebase $from
+git filter-branch --msg-filter "sed -E '/^$gen_issue_re/!s/^/$issue /'" -f $from..$to
+
